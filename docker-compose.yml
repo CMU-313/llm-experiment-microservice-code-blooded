@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-service
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: ollama-pull
+    volumes:
+      - ollama-data:/root/.ollama
+    depends_on:
+      - ollama
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      echo 'Waiting to pull model from Ollama...';
+      sleep 10;
+      ollama pull llama3.1:8b;
+      echo 'Model pulled successfully!';
+      "
+    restart: "no"
+
+  translator:
+    build: .
+    container_name: translation-service
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.1:8b
+    depends_on:
+      ollama-pull:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  ollama-data:
+    driver: local

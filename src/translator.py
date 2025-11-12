@@ -64,7 +64,7 @@ def translate_content(post: str) -> tuple[bool, str]:
         language = get_language(post)
 
         if not language or not isinstance(language, str)  or _REFUSAL_RE.search(language):
-            print("returning fallback")
+            print("Language failed -- returning fallback")
             return fallback
 
         isEnglish = True
@@ -75,13 +75,13 @@ def translate_content(post: str) -> tuple[bool, str]:
         res = get_translation(post)
 
         if not res or not isinstance(res, str) or _REFUSAL_RE.search(res):
-            print("returning fallback")
+            print("Translation failed -- returning fallback")
             return fallback
 
         return (isEnglish, res)
 
     except Exception as e:
-        print("returning fallback")
+        print("Exception -- returning fallback")
         return fallback
     
 
