@@ -15,4 +15,4 @@ def test_llm_normal_response():
 def test_llm_gibberish_response():
     is_english, translated = translate_content("@#$%^&*()")
     assert is_english == False
-    assert len(translated) > 0
+    assert translated != "Something went wrong"
