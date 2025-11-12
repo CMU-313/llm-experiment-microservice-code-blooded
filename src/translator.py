@@ -35,7 +35,7 @@ def get_language(post: str) -> str | None:
 
 def get_translation(post: str) -> str | None:
     context = """\
-      You are a language translator. Translate the text into standard English.
+      You are a language translator. Translate the input text into standard English and return the translation.
       If it is already in English, return the input text unedited.
       If the input text is malformed or incomprehensible, respond: I don't understand your request
 
@@ -70,7 +70,7 @@ def translate_content(post: str) -> tuple[bool, str]:
         isEnglish = True
         if language != 'English':
           isEnglish = False
-          return (isEnglish, post)
+          return (isEnglish, get_translation(post))
 
         res = get_translation(post)
 
