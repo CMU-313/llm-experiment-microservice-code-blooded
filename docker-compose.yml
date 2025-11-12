@@ -13,18 +13,11 @@ services:
   ollama-pull:
     image: ollama/ollama:latest
     container_name: ollama-pull
-    volumes:
-      - ollama-data:/root/.ollama
     depends_on:
       - ollama
-    entrypoint: /bin/sh
-    command: >
-      -c "
-      echo 'Waiting to pull model from Ollama...';
-      sleep 10;
-      ollama pull llama3.1:8b;
-      echo 'Model pulled successfully!';
-      "
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    command: pull llama3.1:8b
     restart: "no"
 
   translator:

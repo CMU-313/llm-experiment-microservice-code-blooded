@@ -7,8 +7,8 @@ _REFUSAL_RE = re.compile(
     re.IGNORECASE
 )
 # Initialize Ollama client
-OLLAMA_URL = os.getenv("OLLAMA_HOST", "localhost:11434")
-client = Client(host=OLLAMA_URL)
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+client = Client(host=OLLAMA_HOST)
 MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 
 
@@ -67,10 +67,8 @@ def translate_content(post: str) -> tuple[bool, str]:
             print("Language failed -- returning fallback")
             return fallback
 
-        isEnglish = True
-        if language != 'English':
-          isEnglish = False
-          return (isEnglish, post)
+        if language == 'English':
+          return (True, post)
 
         res = get_translation(post)
 
@@ -78,7 +76,7 @@ def translate_content(post: str) -> tuple[bool, str]:
             print("Translation failed -- returning fallback")
             return fallback
 
-        return (isEnglish, res)
+        return (False, res)
 
     except Exception as e:
         print("Exception -- returning fallback")
